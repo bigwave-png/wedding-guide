@@ -83,13 +83,6 @@
             box-shadow: 0 4px 15px rgba(254, 229, 0, 0.3);
         }
         
-        .auto {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            margin-bottom: 20px;
-        }
-        
         #status {
             text-align: center;
             color: #666;
@@ -124,10 +117,6 @@
             (부천터미널소풍 7층)
         </div>
         
-        <button class="button auto" onclick="autoDetect()">
-            🔄 자동으로 연결하기
-        </button>
-        
         <button class="button naver" onclick="openNaverMap()">
             네이버 지도로 길찾기
         </button>
@@ -146,18 +135,12 @@
     </div>
 
     <script>
-        // 소풍웨딩컨벤션 정확한 주소
+        // 소풍웨딩컨벤션 정확한 좌표
         const destination = {
             name: "소풍컨벤션웨딩",
-            fullAddress: "경기 부천시 원미구 송내대로 239 부천터미널 7층",
-            kakaoPlaceId: "1138987528"
+            lat: "37.4892086",
+            lng: "126.7535011"
         };
-
-        // 카카오맵 웹 길찾기 URL
-        const kakaoWebUrl = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${encodeURIComponent(destination.fullAddress)}`;
-        
-        // 네이버 지도 웹 길찾기 URL
-        const naverWebUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.fullAddress)}`;
 
         function showStatus(message) {
             document.getElementById('status').textContent = message;
@@ -165,17 +148,20 @@
 
         function openNaverMap() {
             showStatus('네이버 지도로 이동합니다...');
-            window.location.href = naverWebUrl;
+            
+            // 네이버 지도 길찾기 URL (도착지 설정)
+            const naverUrl = `https://map.naver.com/p/directions/-/${destination.lat},${destination.lng}/${encodeURIComponent(destination.name)}/-/transit`;
+            
+            window.location.href = naverUrl;
         }
 
         function openKakaoMap() {
             showStatus('카카오맵으로 이동합니다...');
-            window.location.href = kakaoWebUrl;
-        }
-
-        function autoDetect() {
-            showStatus('카카오맵으로 연결합니다...');
-            window.location.href = kakaoWebUrl;
+            
+            // 카카오맵 길찾기 URL (도착지 설정)
+            const kakaoUrl = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${destination.lat},${destination.lng}`;
+            
+            window.location.href = kakaoUrl;
         }
     </script>
 </body>
