@@ -150,7 +150,7 @@
             showStatus('네이버 지도로 이동합니다...');
             
             // 네이버 지도 길찾기 URL (출발지: 현위치, 도착지: 소풍컨벤션웨딩)
-            const naverUrl = `https://map.naver.com/p/directions/-/-/-/${destination.lat},${destination.lng}/${encodeURIComponent(destination.name)}/-/transit`;
+            const naverUrl = `https://map.naver.com/p/directions/-/-/-/${destination.lng},${destination.lat},${encodeURIComponent(destination.name)}/-/transit`;
             
             window.location.href = naverUrl;
         }
