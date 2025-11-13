@@ -135,34 +135,20 @@
     </div>
 
     <script>
-        // 소풍웨딩컨벤션 정확한 좌표
-        const destination = {
-            name: "소풍컨벤션웨딩부페",
-            lat: "37.4892086",
-            lng: "126.7535011",
-            placeId: "12881272"  // 네이버 Place ID
-        };
-
         function showStatus(message) {
             document.getElementById('status').textContent = message;
         }
 
         function openNaverMap() {
             showStatus('네이버 지도로 이동합니다...');
-            
-            // 네이버 지도 길찾기 URL (출발지: 현위치, 도착지: 소풍컨벤션웨딩부페)
-            const naverUrl = `https://map.naver.com/p/directions/-/-/-/14110516.0338266,4509534.4770526,${encodeURIComponent(destination.name)},${destination.placeId},PLACE_POI/-/transit?c=11.00,0,0,0,dh`;
-            
-            window.location.href = naverUrl;
+            // 네이버 지도 길찾기 - 현위치에서 소풍컨벤션웨딩부페로
+            window.location.href = 'https://map.naver.com/p/directions/-/-/-/14110516.0338266,4509534.4770526,%EC%86%8C%ED%92%8D%EC%BB%A8%EB%B2%A4%EC%85%98%EC%9B%A8%EB%94%A9%EB%B6%80%ED%8E%98,12881272,PLACE_POI/-/transit?c=11.00,0,0,0,dh';
         }
 
         function openKakaoMap() {
             showStatus('카카오맵으로 이동합니다...');
-            
-            // 카카오맵 길찾기 URL (도착지 설정)
-            const kakaoUrl = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${destination.lat},${destination.lng}`;
-            
-            window.location.href = kakaoUrl;
+            // 카카오맵 길찾기 - 현위치에서 소풍컨벤션웨딩으로
+            window.location.href = 'https://map.kakao.com/link/to/소풍컨벤션웨딩,37.4892086,126.7535011';
         }
     </script>
 </body>
