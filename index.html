@@ -149,19 +149,29 @@
         // 소풍웨딩컨벤션 정보
         const destination = {
             name: "소풍웨딩컨벤션",
+            placeName: "부천터미널소풍",
             fullAddress: "경기 부천시 원미구 송내대로 239",
-            searchQuery: "부천터미널소풍"
+            // 부천터미널소풍 정확한 좌표 (카카오맵, 네이버 지도 모두 확인)
+            lat: "37.5891829",
+            lng: "126.7535926"
         };
 
-        // 네이버 지도 URL (주소 검색 방식)
-        const naverMapAppUrl = `nmap://search?query=${encodeURIComponent(destination.searchQuery)}&appname=wedding`;
-        const naverWebUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.searchQuery)}`;
+        // 네이버 지도 URL
+        // 방법1: 길찾기 직접 실행 (좌표 사용)
+        const naverRouteApp = `nmap://route/public?dlat=${destination.lat}&dlng=${destination.lng}&dname=${encodeURIComponent(destination.name)}&appname=wedding`;
+        // 방법2: 장소 검색 후 길찾기 (검색어 사용 - 백업용)
+        const naverSearchApp = `nmap://search?query=${encodeURIComponent(destination.placeName)}&appname=wedding`;
+        const naverWeb = `https://map.naver.com/p/directions/-/-/-/transit?c=${destination.lng},${destination.lat},15,0,0,0,dh`;
         
-        // 카카오맵 URL (주소 검색 방식)
-        const kakaoMapAppUrl = `kakaomap://search?q=${encodeURIComponent(destination.fullAddress)}`;
-        const kakaoWebUrl = `https://map.kakao.com/?q=${encodeURIComponent(destination.fullAddress)}`;
+        // 카카오맵 URL
+        // 방법1: 길찾기 직접 실행 (좌표 사용)
+        const kakaoRouteApp = `kakaomap://route?ep=${destination.lat},${destination.lng}&by=PUBLICTRANSIT`;
+        // 방법2: 장소 보기 (백업용)
+        const kakaoLookApp = `kakaomap://look?p=${destination.lat},${destination.lng}`;
+        const kakaoWeb = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${destination.lat},${destination.lng}`;
 
         let appOpened = false;
+        let tried = 0;
 
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
@@ -169,46 +179,84 @@
             }
         });
 
+        // iOS 감지
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
         function showStatus(message) {
             document.getElementById('status').textContent = message;
         }
 
         function openNaverMap() {
             showStatus('네이버 지도 실행중...');
-            window.location.href = naverMapAppUrl;
             
-            setTimeout(function() {
-                if (!appOpened) {
-                    window.location.href = naverWebUrl;
-                }
-            }, 1500);
+            if (isIOS) {
+                // iOS는 URL 스킴이 잘 안 될 수 있어서 웹으로
+                window.location.href = naverWeb;
+            } else {
+                // 안드로이드: 앱 길찾기 시도
+                window.location.href = naverRouteApp;
+                
+                setTimeout(function() {
+                    if (!appOpened) {
+                        // 앱이 없으면 웹으로
+                        window.location.href = naverWeb;
+                    }
+                }, 1500);
+            }
         }
 
         function openKakaoMap() {
             showStatus('카카오맵 실행중...');
-            window.location.href = kakaoMapAppUrl;
             
-            setTimeout(function() {
-                if (!appOpened) {
-                    window.location.href = kakaoWebUrl;
-                }
-            }, 1500);
+            if (isIOS) {
+                // iOS는 웹으로
+                window.location.href = kakaoWeb;
+            } else {
+                // 안드로이드: 앱 길찾기 시도
+                window.location.href = kakaoRouteApp;
+                
+                setTimeout(function() {
+                    if (!appOpened) {
+                        window.location.href = kakaoWeb;
+                    }
+                }, 1500);
+            }
         }
 
         function autoDetect() {
-            showStatus('앱을 확인하는 중...');
-            window.location.href = naverMapAppUrl;
+            showStatus('길찾기를 시작합니다...');
+            tried = 0;
+            
+            if (isIOS) {
+                // iOS는 바로 네이버 웹으로
+                window.location.href = naverWeb;
+            } else {
+                // 안드로이드: 네이버 앱 길찾기 시도
+                tryNaverApp();
+            }
+        }
+        
+        function tryNaverApp() {
+            tried++;
+            window.location.href = naverRouteApp;
+            
+            setTimeout(function() {
+                if (!appOpened && tried < 2) {
+                    showStatus('카카오맵 확인중...');
+                    tryKakaoApp();
+                } else if (!appOpened) {
+                    window.location.href = naverWeb;
+                }
+            }, 1000);
+        }
+        
+        function tryKakaoApp() {
+            window.location.href = kakaoRouteApp;
             
             setTimeout(function() {
                 if (!appOpened) {
-                    showStatus('카카오맵 확인중...');
-                    window.location.href = kakaoMapAppUrl;
-                    
-                    setTimeout(function() {
-                        if (!appOpened) {
-                            window.location.href = naverWebUrl;
-                        }
-                    }, 1000);
+                    // 둘 다 없으면 네이버 웹으로
+                    window.location.href = naverWeb;
                 }
             }, 1000);
         }
