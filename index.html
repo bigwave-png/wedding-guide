@@ -146,24 +146,23 @@
     </div>
 
     <script>
-        // 소풍웨딩컨벤션 정확한 좌표
+        // 소풍웨딩컨벤션 정보
         const destination = {
             name: "소풍웨딩컨벤션",
-            lat: "37.589263",   // 부천터미널소풍 정확한 위도
-            lng: "126.753706"   // 부천터미널소풍 정확한 경도
+            // 네이버 지도용 장소명
+            naverPlace: "소풍컨벤션웨딩",
+            // 카카오맵 Place ID (100% 정확한 위치)
+            kakaoPlaceId: "1138987528"
         };
 
-        // 네이버 지도 앱 URL - 목적지만 설정 (출발지는 현재위치 자동)
-        const naverRouteApp = `nmap://route/public?dlat=${destination.lat}&dlng=${destination.lng}&dname=${encodeURIComponent(destination.name)}&appname=wedding`;
+        // 네이버 지도 URL - 장소명으로 검색
+        const naverSearchApp = `nmap://search?query=${encodeURIComponent(destination.naverPlace)}&appname=wedding`;
+        const naverWeb = `https://map.naver.com/p/search/${encodeURIComponent(destination.naverPlace)}`;
         
-        // 네이버 지도 웹 URL - 길찾기 (출발지는 자동으로 현재 위치)
-        const naverWeb = `https://map.naver.com/p/directions/-/${destination.lng},${destination.lat},%EC%86%8C%ED%92%8D%EC%9B%A8%EB%94%A9%EC%BB%A8%EB%B2%A4%EC%85%98/-/transit?c=${destination.lng},${destination.lat},15,0,0,0,dh`;
-        
-        // 카카오맵 앱 URL - 길찾기
-        const kakaoRouteApp = `kakaomap://route?ep=${destination.lat},${destination.lng}&by=PUBLICTRANSIT`;
-        
-        // 카카오맵 웹 URL - 길찾기
-        const kakaoWeb = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${destination.lat},${destination.lng}`;
+        // 카카오맵 URL - Place ID 사용 (정확한 위치)
+        const kakaoPlaceApp = `kakaomap://place?id=${destination.kakaoPlaceId}`;
+        const kakaoRouteApp = `kakaomap://route?ep=place:${destination.kakaoPlaceId}`;
+        const kakaoWeb = `https://place.map.kakao.com/${destination.kakaoPlaceId}`;
 
         let appOpened = false;
 
@@ -179,7 +178,7 @@
 
         function openNaverMap() {
             showStatus('네이버 지도 실행중...');
-            window.location.href = naverRouteApp;
+            window.location.href = naverSearchApp;
             
             setTimeout(function() {
                 if (!appOpened) {
@@ -190,7 +189,8 @@
 
         function openKakaoMap() {
             showStatus('카카오맵 실행중...');
-            window.location.href = kakaoRouteApp;
+            // Place로 바로 이동 (가장 정확함)
+            window.location.href = kakaoPlaceApp;
             
             setTimeout(function() {
                 if (!appOpened) {
@@ -202,17 +202,17 @@
         function autoDetect() {
             showStatus('앱을 확인하는 중...');
             
-            // 네이버 지도 길찾기 먼저 시도
-            window.location.href = naverRouteApp;
+            // 네이버 지도 먼저 시도
+            window.location.href = naverSearchApp;
             
             setTimeout(function() {
                 if (!appOpened) {
                     showStatus('카카오맵 확인중...');
-                    window.location.href = kakaoRouteApp;
+                    window.location.href = kakaoPlaceApp;
                     
                     setTimeout(function() {
                         if (!appOpened) {
-                            // 둘 다 없으면 네이버 웹 길찾기
+                            // 둘 다 없으면 네이버 웹으로
                             window.location.href = naverWeb;
                         }
                     }, 1000);
