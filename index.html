@@ -146,97 +146,36 @@
     </div>
 
     <script>
-        // ============================================
-        // 소풍웨딩컨벤션 정확한 위치 정보
-        // ============================================
+        // 소풍웨딩컨벤션 정확한 주소
         const destination = {
-            // 카카오맵 Place ID (https://place.map.kakao.com/1138987528)
-            kakaoPlaceId: "1138987528",
-            // 네이버 지도 검색어
-            naverSearchQuery: "소풍컨벤션웨딩"
+            name: "소풍컨벤션웨딩",
+            fullAddress: "경기 부천시 원미구 송내대로 239 부천터미널 7층",
+            kakaoPlaceId: "1138987528"
         };
 
-        // ============================================
-        // 카카오맵 URL (Place ID 사용 - 100% 정확)
-        // ============================================
-        // 앱: 현재 위치에서 소풍웨딩컨벤션으로 길찾기 (대중교통)
-        const kakaoRouteApp = `kakaomap://route?sp=~&ep=place:${destination.kakaoPlaceId}&by=PUBLICTRANSIT`;
-        // 웹: 소풍웨딩컨벤션 장소 페이지 (길찾기 버튼 있음)
-        const kakaoWeb = `https://place.map.kakao.com/${destination.kakaoPlaceId}`;
-
-        // ============================================
-        // 네이버 지도 URL (장소명 검색)
-        // ============================================
-        // 앱/웹: 소풍컨벤션웨딩 검색 (길찾기 버튼으로 이동 가능)
-        const naverSearchApp = `nmap://search?query=${encodeURIComponent(destination.naverSearchQuery)}&appname=wedding`;
-        const naverWeb = `https://map.naver.com/p/search/${encodeURIComponent(destination.naverSearchQuery)}`;
-
-        let appOpened = false;
-
-        // 앱이 열렸는지 감지
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                appOpened = true;
-            }
-        });
+        // 카카오맵 웹 길찾기 URL
+        const kakaoWebUrl = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${encodeURIComponent(destination.fullAddress)}`;
+        
+        // 네이버 지도 웹 길찾기 URL
+        const naverWebUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.fullAddress)}`;
 
         function showStatus(message) {
             document.getElementById('status').textContent = message;
         }
 
-        // ============================================
-        // 네이버 지도로 길찾기
-        // ============================================
         function openNaverMap() {
-            showStatus('네이버 지도 실행중...');
-            window.location.href = naverSearchApp;
-            
-            setTimeout(function() {
-                if (!appOpened) {
-                    window.location.href = naverWeb;
-                }
-            }, 1500);
+            showStatus('네이버 지도로 이동합니다...');
+            window.location.href = naverWebUrl;
         }
 
-        // ============================================
-        // 카카오맵으로 길찾기 (Place ID로 정확한 위치)
-        // ============================================
         function openKakaoMap() {
-            showStatus('카카오맵 실행중...');
-            // Place ID로 길찾기 - 현재 위치에서 소풍웨딩컨벤션까지
-            window.location.href = kakaoRouteApp;
-            
-            setTimeout(function() {
-                if (!appOpened) {
-                    // 앱이 없으면 웹 페이지로
-                    window.location.href = kakaoWeb;
-                }
-            }, 1500);
+            showStatus('카카오맵으로 이동합니다...');
+            window.location.href = kakaoWebUrl;
         }
 
-        // ============================================
-        // 자동 감지 (네이버 우선, 카카오 백업)
-        // ============================================
         function autoDetect() {
-            showStatus('앱을 확인하는 중...');
-            
-            // 1. 네이버 지도 앱 먼저 시도
-            window.location.href = naverSearchApp;
-            
-            setTimeout(function() {
-                if (!appOpened) {
-                    showStatus('카카오맵 확인중...');
-                    // 2. 네이버 없으면 카카오맵 시도
-                    window.location.href = kakaoRouteApp;
-                    
-                    setTimeout(function() {
-                        if (!appOpened) {
-                            // 3. 둘 다 없으면 네이버 웹으로
-                            window.location.href = naverWeb;
-                        }
-                    }, 1000);
-                }
-            }, 1000);
+            showStatus('카카오맵으로 연결합니다...');
+            window.location.href = kakaoWebUrl;
         }
     </script>
 </body>
