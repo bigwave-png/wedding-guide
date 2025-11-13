@@ -137,9 +137,10 @@
     <script>
         // 소풍웨딩컨벤션 정확한 좌표
         const destination = {
-            name: "소풍컨벤션웨딩",
+            name: "소풍컨벤션웨딩부페",
             lat: "37.4892086",
-            lng: "126.7535011"
+            lng: "126.7535011",
+            placeId: "12881272"  // 네이버 Place ID
         };
 
         function showStatus(message) {
@@ -149,8 +150,10 @@
         function openNaverMap() {
             showStatus('네이버 지도로 이동합니다...');
             
-            // 네이버 지도 길찾기 URL - 도착지에 장소명 표시
-            const naverUrl = `https://map.naver.com/p/directions/-/-,,-/${destination.lng},${destination.lat},${encodeURIComponent(destination.name)},-/transit`;
+            // 네이버 지도 길찾기 URL (실제 형식)
+            // 출발지: 비워두면 현위치로 설정됨
+            // 도착지: 소풍컨벤션웨딩부페
+            const naverUrl = `https://map.naver.com/p/directions/-/-/14110516.0338266,4509534.4770526,${encodeURIComponent(destination.name)},${destination.placeId},PLACE_POI/-/transit?c=11.00,0,0,0,dh`;
             
             window.location.href = naverUrl;
         }
