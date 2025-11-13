@@ -149,19 +149,17 @@
         // 소풍웨딩컨벤션 정보
         const destination = {
             name: "소풍웨딩컨벤션",
-            // 네이버 지도용 장소명
             naverPlace: "소풍컨벤션웨딩",
-            // 카카오맵 Place ID (100% 정확한 위치)
+            // 카카오맵 Place ID (정확한 위치)
             kakaoPlaceId: "1138987528"
         };
 
-        // 네이버 지도 URL - 장소명으로 검색
+        // 네이버 지도 URL - 장소명으로 검색 후 길찾기
         const naverSearchApp = `nmap://search?query=${encodeURIComponent(destination.naverPlace)}&appname=wedding`;
         const naverWeb = `https://map.naver.com/p/search/${encodeURIComponent(destination.naverPlace)}`;
         
-        // 카카오맵 URL - Place ID 사용 (정확한 위치)
-        const kakaoPlaceApp = `kakaomap://place?id=${destination.kakaoPlaceId}`;
-        const kakaoRouteApp = `kakaomap://route?ep=place:${destination.kakaoPlaceId}`;
+        // 카카오맵 URL - Place ID로 길찾기 (정확한 위치로 경로 안내)
+        const kakaoRouteApp = `kakaomap://route?sp=~&ep=place:${destination.kakaoPlaceId}&by=PUBLICTRANSIT`;
         const kakaoWeb = `https://place.map.kakao.com/${destination.kakaoPlaceId}`;
 
         let appOpened = false;
@@ -189,8 +187,8 @@
 
         function openKakaoMap() {
             showStatus('카카오맵 실행중...');
-            // Place로 바로 이동 (가장 정확함)
-            window.location.href = kakaoPlaceApp;
+            // Place ID로 길찾기 (현재 위치 → 소풍웨딩컨벤션)
+            window.location.href = kakaoRouteApp;
             
             setTimeout(function() {
                 if (!appOpened) {
@@ -208,7 +206,7 @@
             setTimeout(function() {
                 if (!appOpened) {
                     showStatus('카카오맵 확인중...');
-                    window.location.href = kakaoPlaceApp;
+                    window.location.href = kakaoRouteApp;
                     
                     setTimeout(function() {
                         if (!appOpened) {
