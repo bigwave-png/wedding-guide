@@ -149,8 +149,8 @@
         function openNaverMap() {
             showStatus('네이버 지도로 이동합니다...');
             
-            // 네이버 지도 길찾기 URL (장소명으로 검색 후 길찾기)
-            const naverUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.name)}/address/${destination.lat},${destination.lng}`;
+            // 네이버 지도 길찾기 URL (바로 길찾기 화면)
+            const naverUrl = `https://map.naver.com/p/directions/-/-/${destination.lat},${destination.lng}/${encodeURIComponent(destination.name)}/-/transit`;
             
             window.location.href = naverUrl;
         }
