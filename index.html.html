@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소풍웨딩컨벤션 길찾기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .address {
+            color: #999;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .button {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .button:active {
+            transform: scale(0.98);
+        }
+        
+        .naver {
+            background: #03C75A;
+            color: white;
+            box-shadow: 0 4px 15px rgba(3, 199, 90, 0.3);
+        }
+        
+        .kakao {
+            background: #FEE500;
+            color: #000;
+            box-shadow: 0 4px 15px rgba(254, 229, 0, 0.3);
+        }
+        
+        .auto {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        #status {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+            min-height: 20px;
+        }
+        
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💒 소풍웨딩컨벤션</h1>
+        <div class="subtitle">길찾기 앱을 선택해주세요</div>
+        <div class="address">
+            경기 부천시 원미구 송내대로 239<br>
+            (부천터미널소풍 7층)
+        </div>
+        
+        <button class="button auto" onclick="autoDetect()">
+            🔄 자동으로 연결하기
+        </button>
+        
+        <button class="button naver" onclick="openNaverMap()">
+            네이버 지도로 길찾기
+        </button>
+        
+        <button class="button kakao" onclick="openKakaoMap()">
+            카카오맵으로 길찾기
+        </button>
+        
+        <div id="status"></div>
+        
+        <div class="info">
+            <div class="info-title">📍 오시는 길</div>
+            • 지하철: 7호선 상동역 1번 출구 (도보 3분)<br>
+            • 주차: 2,500대 가능 (3시간 무료)
+        </div>
+    </div>
+
+    <script>
+        // 소풍웨딩컨벤션 정보
+        const destination = {
+            name: "소풍웨딩컨벤션",
+            address: "경기 부천시 원미구 송내대로 239",
+            lat: "37.5892",  // 부천터미널소풍 위도
+            lng: "126.7534"  // 부천터미널소풍 경도
+        };
+
+        // 네이버 지도 URL 스킴
+        const naverMapUrl = `nmap://route/public?dlat=${destination.lat}&dlng=${destination.lng}&dname=${encodeURIComponent(destination.name)}&appname=wedding`;
+        
+        // 카카오맵 URL 스킴
+        const kakaoMapUrl = `kakaomap://route?ep=${destination.lat},${destination.lng}&by=PUBLICTRANSIT`;
+        
+        // 네이버 지도 웹 URL
+        const naverWebUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.address)}`;
+        
+        // 카카오맵 웹 URL
+        const kakaoWebUrl = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${destination.lat},${destination.lng}`;
+
+        let appOpened = false;
+
+        // 페이지가 숨겨지면 앱이 열린 것으로 간주
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                appOpened = true;
+            }
+        });
+
+        // 상태 메시지 표시
+        function showStatus(message) {
+            document.getElementById('status').textContent = message;
+        }
+
+        // 네이버 지도 열기
+        function openNaverMap() {
+            showStatus('네이버 지도 실행중...');
+            window.location.href = naverMapUrl;
+            
+            setTimeout(function() {
+                if (!appOpened) {
+                    window.location.href = naverWebUrl;
+                }
+            }, 1500);
+        }
+
+        // 카카오맵 열기
+        function openKakaoMap() {
+            showStatus('카카오맵 실행중...');
+            window.location.href = kakaoMapUrl;
+            
+            setTimeout(function() {
+                if (!appOpened) {
+                    window.location.href = kakaoWebUrl;
+                }
+            }, 1500);
+        }
+
+        // 자동 감지 (네이버 우선)
+        function autoDetect() {
+            showStatus('앱을 확인하는 중...');
+            
+            // 네이버 지도 먼저 시도
+            window.location.href = naverMapUrl;
+            
+            setTimeout(function() {
+                if (!appOpened) {
+                    showStatus('카카오맵 확인중...');
+                    window.location.href = kakaoMapUrl;
+                    
+                    setTimeout(function() {
+                        if (!appOpened) {
+                            // 둘 다 없으면 네이버 웹으로
+                            window.location.href = naverWebUrl;
+                        }
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        // 모바일 여부 확인
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        // PC에서 접속시 바로 네이버 지도 웹으로 이동
+        if (!isMobile) {
+            window.location.href = naverWebUrl;
+        }
+    </script>
+</body>
+</html>
