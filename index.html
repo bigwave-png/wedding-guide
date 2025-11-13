@@ -150,10 +150,8 @@
         function openNaverMap() {
             showStatus('네이버 지도로 이동합니다...');
             
-            // 네이버 지도 길찾기 URL (실제 형식)
-            // 출발지: 비워두면 현위치로 설정됨
-            // 도착지: 소풍컨벤션웨딩부페
-            const naverUrl = `https://map.naver.com/p/directions/-/-/14110516.0338266,4509534.4770526,${encodeURIComponent(destination.name)},${destination.placeId},PLACE_POI/-/transit?c=11.00,0,0,0,dh`;
+            // 네이버 지도 길찾기 URL (출발지: 현위치, 도착지: 소풍컨벤션웨딩부페)
+            const naverUrl = `https://map.naver.com/p/directions/-/-/-/14110516.0338266,4509534.4770526,${encodeURIComponent(destination.name)},${destination.placeId},PLACE_POI/-/transit?c=11.00,0,0,0,dh`;
             
             window.location.href = naverUrl;
         }
