@@ -149,41 +149,33 @@
         // 소풍웨딩컨벤션 정보
         const destination = {
             name: "소풍웨딩컨벤션",
-            address: "경기 부천시 원미구 송내대로 239",
-            lat: "37.5892",  // 부천터미널소풍 위도
-            lng: "126.7534"  // 부천터미널소풍 경도
+            fullAddress: "경기 부천시 원미구 송내대로 239",
+            searchQuery: "부천터미널소풍"
         };
 
-        // 네이버 지도 URL 스킴
-        const naverMapUrl = `nmap://route/public?dlat=${destination.lat}&dlng=${destination.lng}&dname=${encodeURIComponent(destination.name)}&appname=wedding`;
+        // 네이버 지도 URL (주소 검색 방식)
+        const naverMapAppUrl = `nmap://search?query=${encodeURIComponent(destination.searchQuery)}&appname=wedding`;
+        const naverWebUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.searchQuery)}`;
         
-        // 카카오맵 URL 스킴
-        const kakaoMapUrl = `kakaomap://route?ep=${destination.lat},${destination.lng}&by=PUBLICTRANSIT`;
-        
-        // 네이버 지도 웹 URL
-        const naverWebUrl = `https://map.naver.com/p/search/${encodeURIComponent(destination.address)}`;
-        
-        // 카카오맵 웹 URL
-        const kakaoWebUrl = `https://map.kakao.com/link/to/${encodeURIComponent(destination.name)},${destination.lat},${destination.lng}`;
+        // 카카오맵 URL (주소 검색 방식)
+        const kakaoMapAppUrl = `kakaomap://search?q=${encodeURIComponent(destination.fullAddress)}`;
+        const kakaoWebUrl = `https://map.kakao.com/?q=${encodeURIComponent(destination.fullAddress)}`;
 
         let appOpened = false;
 
-        // 페이지가 숨겨지면 앱이 열린 것으로 간주
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 appOpened = true;
             }
         });
 
-        // 상태 메시지 표시
         function showStatus(message) {
             document.getElementById('status').textContent = message;
         }
 
-        // 네이버 지도 열기
         function openNaverMap() {
             showStatus('네이버 지도 실행중...');
-            window.location.href = naverMapUrl;
+            window.location.href = naverMapAppUrl;
             
             setTimeout(function() {
                 if (!appOpened) {
@@ -192,10 +184,9 @@
             }, 1500);
         }
 
-        // 카카오맵 열기
         function openKakaoMap() {
             showStatus('카카오맵 실행중...');
-            window.location.href = kakaoMapUrl;
+            window.location.href = kakaoMapAppUrl;
             
             setTimeout(function() {
                 if (!appOpened) {
@@ -204,34 +195,22 @@
             }, 1500);
         }
 
-        // 자동 감지 (네이버 우선)
         function autoDetect() {
             showStatus('앱을 확인하는 중...');
-            
-            // 네이버 지도 먼저 시도
-            window.location.href = naverMapUrl;
+            window.location.href = naverMapAppUrl;
             
             setTimeout(function() {
                 if (!appOpened) {
                     showStatus('카카오맵 확인중...');
-                    window.location.href = kakaoMapUrl;
+                    window.location.href = kakaoMapAppUrl;
                     
                     setTimeout(function() {
                         if (!appOpened) {
-                            // 둘 다 없으면 네이버 웹으로
                             window.location.href = naverWebUrl;
                         }
                     }, 1000);
                 }
             }, 1000);
-        }
-
-        // 모바일 여부 확인
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        // PC에서 접속시 바로 네이버 지도 웹으로 이동
-        if (!isMobile) {
-            window.location.href = naverWebUrl;
         }
     </script>
 </body>
